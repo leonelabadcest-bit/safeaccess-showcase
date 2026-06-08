@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ingreso - ESP32 & Servomotor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .timeline-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .timeline-solution {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .timeline-item.active .timeline-solution {
+            max-height: 200px;
+            padding-top: 1rem;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-200 font-sans min-h-screen scroll-smooth">
+    
+    <header class="border-b border-white/10 py-6 px-8 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-2xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">SafeAccess ESP32</h1>
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 font-bold">Sistema de ingreso a través de un servomotor</p>
+                </div>
+            </div>
+            <nav class="flex flex-wrap justify-center gap-4 md:gap-8 text-xs font-semibold uppercase tracking-widest">
+                <button onclick="showTab('inicio')" class="tab-link hover:text-blue-400 transition-colors text-blue-400" id="link-inicio">Proyecto</button>
+                <button onclick="showTab('objetivos')" class="tab-link hover:text-blue-400 transition-colors">Objetivos</button>
+                <button onclick="showTab('simulador')" class="tab-link hover:text-blue-400 transition-colors">Simulador</button>
+                <button onclick="showTab('arquitectura')" class="tab-link hover:text-blue-400 transition-colors">Estructura</button>
+                <button onclick="showTab('codigo')" class="tab-link hover:text-blue-400 transition-colors">Código</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-8 lg:p-12">
+        
+        <!-- INICIO / PROYECTO -->
+        <section id="inicio" class="tab-content active space-y-20">
+            <div class="text-center lg:text-left flex flex-col lg:flex-row items-center gap-12">
+                <div class="lg:w-1/2 space-y-6">
+                    <h2 class="text-4xl lg:text-6xl font-bold leading-tight">Control de Acceso <span class="text-blue-500">Automatizado</span></h2>
+                    <p class="text-lg text-slate-400 max-w-2xl leading-relaxed italic">
+                        "El proyecto busca la optimización de tiempo en cuanto al control de la entrada y salida de personas en laboratorios, de tal forma que, a través de la automatización del control de entradas y salida, se automatice un sistema embebido."
+                    </p>
+                    <div class="space-y-4">
+                        <h4 class="text-sm font-bold text-slate-500 uppercase tracking-widest">Integrantes - 2E1 INFORMÁTICA</h4>
+                        <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                            <span class="px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest">EMILY SOFIA BALAREZO SAQUISILI</span>
+                            <span class="px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-xs font-bold uppercase tracking-widest">LEONEL ISRAEL ABAD CHACHA</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative group">
+                    <div class="absolute inset-0 bg-blue-500/20 blur-[100px] rounded-full group-hover:bg-blue-500/30 transition-all"></div>
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1000" alt="ESP32 Tech" class="rounded-3xl shadow-2xl relative z-10 border border-white/5 grayscale hover:grayscale-0 transition-all duration-700">
+                </div>
+            </div>
+
+            <div class="bg-slate-900/50 border border-white/5 p-10 rounded-[2.5rem] space-y-6">
+                <h3 class="text-3xl font-bold font-display text-blue-400">Justificación</h3>
+                <p class="text-slate-400 text-lg leading-relaxed">
+                    Este sistema embebido llevará como función principal la del control de personal, a través de la lectura de datos por consola, donde se valida los datos permitiendo el acceso. Garantizando una conexión segura, funcional, de calidad y la automatización de la misma.
+                </p>
+            </div>
+        </section>
+
+        <!-- OBJETIVOS -->
+        <section id="objetivos" class="tab-content space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h3 class="text-3xl lg:text-5xl font-bold font-display">Objetivos del Proyecto</h3>
+                <p class="text-slate-500">Definición de metas para el desarrollo del sistema de ingreso.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-900 border border-white/10 p-8 rounded-3xl space-y-6">
+                    <h4 class="text-xl font-bold text-blue-400 flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Objetivo General
+                    </h4>
+                    <p class="text-slate-400 leading-relaxed">
+                        Diseñar un sistema de entrada de personas a un laboratorio a partir de un ESP 32 y un servomotor a través del envío de señales analógicas por la consola, implementando un led para comprobar si el sistema permite la entrada o la salida del laboratorio.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900 border border-white/10 p-8 rounded-3xl space-y-6">
+                    <h4 class="text-xl font-bold text-cyan-400 flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Objetivos Específicos
+                    </h4>
+                    <ul class="space-y-4 text-slate-400">
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-2"></span>
+                            <span>Investigar el funcionamiento del ESP 32 y el servomotor a partir del envío de señales lógicas.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-2"></span>
+                            <span>Desarrollar el diseño del sistema embebido y la programación esencial para el funcionamiento del mismo.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 bg-cyan-500 rounded-full mt-2"></span>
+                            <span>Construir el sistema embebido en el protoboard.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIMULADOR -->
+        <section id="simulador" class="tab-content">
+            <div class="flex flex-col items-center mb-12">
+                <h3 class="text-3xl font-bold mb-4 font-display">Consola de Control</h3>
+                <p class="text-slate-500 text-center max-w-xl">Envía señales lógicas (0-9) para ingresar la clave. La clave es <span class="text-blue-400 font-bold">1 2 3 4</span>. Usa <span class="text-white font-bold">*</span> o <span class="text-white font-bold">#</span> para resetear.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- Visualizer -->
+                <div class="bg-slate-900 border border-white/5 rounded-[2.5rem] p-10 shadow-3xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
+                    
+                    <div class="grid grid-cols-2 gap-8 mb-12">
+                        <!-- LEDs -->
+                        <div class="space-y-6 bg-black/20 p-6 rounded-3xl border border-white/5">
+                            <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4">Indicadores LED</h4>
+                            <div class="flex justify-around items-center">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div id="led-green" class="led led-green off"></div>
+                                    <span class="text-[10px] font-bold text-green-500/50">ENTRY</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-3">
+                                    <div id="led-red" class="led led-red on"></div>
+                                    <span class="text-[10px] font-bold text-red-500/50">LOCKED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7-Segment -->
+                        <div class="bg-black/20 p-6 rounded-3xl border border-white/5 flex flex-col items-center">
+                            <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-4">Dígito Actual</h4>
+                            <div class="segment-display" id="display-7">
+                                <svg viewBox="0 0 100 150" class="h-24">
+                                    <path id="seg-a" d="M 20 10 L 80 10 L 70 20 L 30 20 Z" class="seg off"/>
+                                    <path id="seg-b" d="M 85 15 L 85 70 L 75 65 L 75 25 Z" class="seg off"/>
+                                    <path id="seg-c" d="M 85 80 L 85 135 L 75 125 L 75 85 Z" class="seg off"/>
+                                    <path id="seg-d" d="M 20 140 L 80 140 L 70 130 L 30 130 Z" class="seg off"/>
+                                    <path id="seg-e" d="M 15 80 L 15 135 L 25 125 L 25 85 Z" class="seg off"/>
+                                    <path id="seg-f" d="M 15 15 L 15 70 L 25 65 L 25 25 Z" class="seg off"/>
+                                    <path id="seg-g" d="M 20 75 L 80 75 L 70 85 L 30 85 L 20 75 Z" class="seg off"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Servo Visualizer -->
+                    <div class="bg-black/20 p-10 rounded-3xl border border-white/5 flex flex-col items-center relative">
+                        <h4 class="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold mb-8">Estado del Servomotor</h4>
+                        <div class="servo-container">
+                            <div class="servo-body"></div>
+                            <div class="servo-shaft"></div>
+                            <div id="servo-arm" class="servo-arm locked"></div>
+                        </div>
+                        <div class="mt-8 flex gap-8">
+                            <div class="text-center">
+                                <p class="text-xs text-slate-500 font-mono">Ángulo</p>
+                                <p id="servo-angle" class="text-xl font-bold font-display text-blue-400">0°</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-slate-500 font-mono">Cerradura</p>
+                                <p id="door-status" class="text-xl font-bold font-display text-red-500 uppercase">Bloqueada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Console -->
+                <div class="flex flex-col gap-6 h-full">
+                    <div class="bg-slate-950 border border-white/10 rounded-[2rem] p-6 shadow-2xl flex-grow font-mono text-sm overflow-hidden flex flex-col">
+                        <div class="flex items-center gap-2 mb-4 border-b border-white/5 pb-4">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase ml-4">Monitor Serial - 115200 Baud</span>
+                        </div>
+                        <div id="console-output" class="flex-grow overflow-y-auto space-y-1 mb-4 pr-2 custom-scrollbar">
+                            <p class="text-blue-400">Sistema Iniciado. Ingrese clave:</p>
+                        </div>
+                        <div class="relative group">
+                            <input type="text" id="console-input" placeholder="Escribe un dígito..." 
+                                class="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-all text-blue-400 placeholder:text-slate-700"
+                                autocomplete="off" maxlength="1">
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-slate-600 font-bold uppercase pointer-events-none group-focus-within:text-blue-500/50">Enter p/ Enviar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ESTRUCTURA / ARQUITECTURA -->
+        <section id="arquitectura" class="tab-content space-y-12">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h3 class="text-3xl lg:text-5xl font-bold font-display">Diseño de Hardware</h3>
+                <p class="text-slate-500">Conexión y componentes del sistema embebido.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-slate-900 p-8 rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all text-center">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                        </svg>
+                    </div>
+                    <h5 class="font-bold mb-2">Cerebro ESP32</h5>
+                    <p class="text-sm text-slate-500">Procesamiento de señales analógicas y control lógico del sistema.</p>
+                </div>
+                <div class="bg-slate-900 p-8 rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all text-center">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                    </div>
+                    <h5 class="font-bold mb-2">Servomotor SG90</h5>
+                    <p class="text-sm text-slate-500">Actuador mecánico encargado de la apertura física de la puerta.</p>
+                </div>
+                <div class="bg-slate-900 p-8 rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all text-center">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h5 class="font-bold mb-2">Indicadores LED</h5>
+                    <p class="text-sm text-slate-500">Retroalimentación visual del estado del acceso (Verde: Abierto / Rojo: Bloqueado).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CÓDIGO -->
+        <section id="codigo" class="tab-content space-y-20">
+            <!-- Galería de Desarrollo Estilo Microtesis -->
+            <div class="bg-slate-900/50 border border-white/10 rounded-[2.5rem] p-10 space-y-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-1.5 h-8 bg-blue-500 rounded-full"></div>
+                    <h3 class="text-3xl font-bold font-display text-slate-200 uppercase tracking-tight">Galería de Desarrollo</h3>
+                </div>
+                <p class="text-slate-400 italic">Evidencias visuales del ensamblaje del circuito y el funcionamiento del sistema de control:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Tarjeta 1 -->
+                    <div class="bg-slate-950 border border-white/5 rounded-3xl p-4 space-y-4 hover:border-blue-500/30 transition-all group">
+                        <div class="aspect-video bg-black/40 rounded-2xl overflow-hidden border border-dashed border-slate-700 group-hover:border-blue-500/50">
+                            <img src="assets/prototipo.jpg" alt="Prototipo en Protoboard" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                        </div>
+                        <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Prototipo en Protoboard</p>
+                    </div>
+
+                    <!-- Tarjeta 2 -->
+                    <div class="bg-slate-950 border border-white/5 rounded-3xl p-4 space-y-4 hover:border-blue-500/30 transition-all group">
+                        <div class="aspect-video bg-black/40 rounded-2xl overflow-hidden border border-dashed border-slate-700 group-hover:border-blue-500/50">
+                            <img src="assets/display.jpg" alt="Módulo de Pantalla" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                        </div>
+                        <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Módulo de Pantalla 7 Segmentos</p>
+                    </div>
+
+                    <!-- Tarjeta 3 -->
+                    <div class="bg-slate-950 border border-white/5 rounded-3xl p-4 space-y-4 hover:border-blue-500/30 transition-all group">
+                        <div class="aspect-video bg-black/40 rounded-2xl overflow-hidden border border-dashed border-slate-700 group-hover:border-blue-500/50">
+                            <img src="assets/baquelita.jpg" alt="Montaje en Baquelita" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-500">
+                        </div>
+                        <p class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Montaje en Baquelita</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Código -->
+            <div class="space-y-8">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h3 class="text-3xl font-bold font-display text-blue-400">Código Fuente SafeAccess</h3>
+                        <p class="text-slate-500 mt-2">Programación esencial para el funcionamiento del sistema embebido.</p>
+                    </div>
+                <button class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all" onclick="copyCode()">COPIAR CÓDIGO</button>
+            </div>
+            <div class="bg-slate-950 rounded-[2.5rem] border border-white/5 p-8 shadow-inner overflow-hidden relative">
+                <div class="absolute top-4 right-4 text-[10px] font-mono text-slate-600 uppercase tracking-widest">C++ / Arduino</div>
+                <pre class="custom-scrollbar overflow-x-auto"><code class="text-sm font-mono leading-relaxed text-blue-300/80" id="arduino-code-block">
+#include <ESP32Servo.h>
+     
+// Usamos const byte para ahorrar memoria y proteger los datos
+const int clave[4] = {1, 2, 3, 4};
+int dato[4] = {0, 0, 0, 0};
+int posicion = 0;
+
+const int ledVerde = 2; // led1
+const int ledRojo = 4;  // led2
+const int pinServo = 13;
+
+Servo miServo;
+bool sistemaAbierto = false;
+
+// Definición de segmentos optimizada
+const byte numeros[10][7] = {
+  {1,1,1,1,1,1,0}, // 0
+  {0,1,1,0,0,0,0}, // 1
+  {1,1,0,1,1,0,1}, // 2
+  {1,1,1,1,0,0,1}, // 3
+  {0,1,1,0,0,1,1}, // 4
+  {1,0,1,1,0,1,1}, // 5
+  {0,0,1,1,1,1,1}, // 6
+  {1,1,1,0,0,0,0}, // 7
+  {1,1,1,1,1,1,1}, // 8
+  {1,1,1,0,0,1,1}  // 9
+};
+
+const int segmentos[7] = {23, 22, 21, 19, 18, 5, 17};
+
+void setup() {
+  for (int i = 0; i < 7; i++) {
+    pinMode(segmentos[i], OUTPUT);
+  }
+
+  miServo.attach(pinServo, 500, 2400);
+  Serial.begin(115200);
+
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledRojo, OUTPUT);
+
+  // Estado inicial
+  miServo.write(0);
+  digitalWrite(ledVerde, LOW);
+  digitalWrite(ledRojo, HIGH);
+  mostrarUnDigito(0);
+  Serial.println("Sistema Iniciado. Ingrese clave:");
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char valor = Serial.read();
+
+    // Filtrar: Solo procesar si es un número entre 0 y 9
+    if (valor >= '0' && valor <= '9') {
+      int numeroIngresado = valor - '0';
+      dato[posicion] = numeroIngresado;
+
+      Serial.print("Digito ");
+      Serial.print(posicion + 1);
+      Serial.print(": ");
+      Serial.println(numeroIngresado);
+
+      mostrarUnDigito(numeroIngresado);
+      posicion++;
+
+      if (posicion >= 4) {
+        delay(500); // Pequeña pausa para ver el último dígito
+        verificarClave();
+      }
+    }
+    else if (valor == '*' || valor == '#') { // Tecla de reset opcional
+      posicion = 0;
+      mostrarUnDigito(0);
+      Serial.println("Entrada reseteada");
+    }
+  }
+}
+
+void verificarClave() {
+  bool claveCorrecta = true;
+  for (int i = 0; i < 4; i++) {
+    if (dato[i] != clave[i]) {
+      claveCorrecta = false;
+      break;
+    }
+  }
+
+  if (claveCorrecta) {
+    sistemaAbierto = !sistemaAbierto;
+    if (sistemaAbierto) {
+      Serial.println("PUERTA ABIERTA");
+      miServo.write(100);
+      digitalWrite(ledVerde, HIGH);
+      digitalWrite(ledRojo, LOW);
+    } else {
+      Serial.println("PUERTA CERRADA");
+      miServo.write(0);
+      digitalWrite(ledVerde, LOW);
+      digitalWrite(ledRojo, HIGH);
+    }
+  } else {
+    Serial.println("CLAVE INCORRECTA");
+    digitalWrite(ledRojo, LOW);
+    delay(200);
+    digitalWrite(ledRojo, HIGH);
+  }
+
+  // Resetear para la siguiente entrada
+  posicion = 0;
+  mostrarUnDigito(0);
+}
+
+void mostrarUnDigito(int numero) {
+  if (numero < 0 || numero > 9) return;
+  for (int i = 0; i < 7; i++) {
+    digitalWrite(segmentos[i], numeros[numero][i]);
+  }
+}</code></pre>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-white/5 py-12 px-8 bg-slate-950/50 mt-20">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            <div>
+                <p class="font-display font-bold text-lg text-slate-300">SafeAccess Project</p>
+                <p class="text-sm text-slate-500">2E1 INFORMÁTICA | Proyecto Integrador</p>
+            </div>
+            <div class="flex gap-6">
+                <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">ESP32</div>
+                <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Servomotor SG90</div>
+                <div class="text-[10px] text-slate-600 font-bold uppercase tracking-widest">7-Segment Display</div>
+            </div>
+            <p class="text-[10px] text-slate-600">© 2026 - Emily Balarezo & Leonel Abad</p>
+        </div>
+    </footer>
+
+    <script src="simulator.js"></script>
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(link => link.classList.remove('text-blue-400'));
+            document.getElementById(tabId).classList.add('active');
+            
+            const links = document.querySelectorAll('.tab-link');
+            links.forEach(l => {
+                if(l.getAttribute('onclick').includes(tabId)) {
+                    l.classList.add('text-blue-400');
+                }
+            });
+        }
+
+        function copyCode() {
+            const code = document.getElementById('arduino-code-block').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerText;
+                btn.innerText = "¡COPIADO!";
+                btn.classList.replace('bg-blue-600', 'bg-green-600');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.replace('bg-green-600', 'bg-blue-600');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
